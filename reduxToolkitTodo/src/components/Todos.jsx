@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { removeTodo, updateTodo } from "../features/todo/todoSlice";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 function Todos() {
   const todos = useSelector((state) => state.todos);
@@ -8,8 +8,11 @@ function Todos() {
   const [editText, setEditText] = useState("");
   const [editingTodoId, setEditingTodoId] = useState(null);
 
-//? Added a update functionality.
-    
+
+//? Added update functionality.
+  
+  const inputRef = useRef(null);  
+  
   const handleUpdateTodo = (id) => {
     if (editText !== "") {
       dispatch(updateTodo({ id, text: editText }));
@@ -17,6 +20,12 @@ function Todos() {
       setEditText("");
     }
   };
+
+  useEffect(() => {
+    if (editingTodoId !== null) {
+      inputRef.current.focus();
+    }
+  }, [editingTodoId]);
 
   return (
     <>
@@ -33,7 +42,8 @@ function Todos() {
                   type="text"
                   value={editText}
                   onChange={(e) => setEditText(e.target.value)}
-                  className="text-white bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900  text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out"
+                  className="text-white bg-gray-800 rounded border border-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-900  text-base outline-none py-1 px-3 leading-8 transition-colors duration-200 ease-in-out "
+                  ref={inputRef}
                 />
                 <button
                   onClick={() => handleUpdateTodo(todo.id)}
